@@ -1,15 +1,10 @@
 import { Handler, Router } from 'express';
 import { existsSync, lstatSync, readdirSync } from 'fs';
 import { dirname, join, resolve } from 'path';
+import { parseMiddleware } from './middleware';
+import { Method, RouterOpts } from './types';
 
-export type Method = 'get'|'post'|'put'|'patch'|'delete'|'all';
 const METHODS = Object.freeze<Method>(['get', 'post', 'put', 'patch', 'delete', 'all']);
-
-export interface RouterOpts {
-  baseDir?: string;
-  strictExports?: boolean;
-}
-
 const isDirectory = (path: string) => lstatSync(path).isDirectory();
 
 const createRouteLoader = (basedir: string, router: Router, strict: boolean) => {
@@ -20,11 +15,18 @@ const createRouteLoader = (basedir: string, router: Router, strict: boolean) => 
     const route = join(routepath, routename);
     const handlers = Object.entries<Handler>(require(filepath));
 
+    // find any middlewares first before looping through each handler
+    const middlewares = parseMiddleware(handlers);
+
     for (const [method, handler] of handlers) {
       if (strict && !METHODS.includes(method as Method)) {
         throw new Error(`Extraneous exports detected at ${filepath}`);
       }
-      router[method]?.(route, handler);
+
+      if (router[method]) {
+        const middleware = middlewares.getMiddleware(method as Method);
+        router[method](route, ...middleware, handler);
+      }
     }
   };
 };
