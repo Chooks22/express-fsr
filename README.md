@@ -43,6 +43,8 @@ and builds the route based on the file's path and applies the exported verb (`ex
 
 ### Sample Handlers
 
+**Important**: `delete` method is aliased as `del`, since `delete` is a reserved keyword.
+
 ```ts
 // src/routes/index.ts
 // GET /
@@ -60,6 +62,11 @@ interface Params {
 // GET /users/:id
 export const get: RequestHandler<Params> = (req, res) => {
   res.json({ userId: req.params.id });
+}
+
+// DELETE /users/:id
+export const del: RequestHandler<Params> = (req, res) => {
+  res.json({ userId: req.params.id, deleted: 1 });
 }
 ```
 
