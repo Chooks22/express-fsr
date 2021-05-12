@@ -79,3 +79,47 @@ export const post: RequestHandler<Params> = (req, res) => {
   res.json({ userId: req.params.id, ok: 1 });
 }
 ```
+
+## Middlewares
+
+`fs-express-router` grabs middlewares from an exported variable `middlewares`.
+
+### Usage
+
+```ts
+import { Middlewares } from 'fs-express-router';
+export const middlewares: Middlewares;
+```
+
+### Per-file middlewares
+
+```ts
+// single middleware
+export const middlewares: Middlewares = async (req, res, next) => {
+  console.log('this route was called!');
+  next();
+};
+
+// multiple middlewares
+export const middlewares: Middlewares = [
+  myMiddleware1,
+  myMiddleware2,
+];
+```
+
+### Per-handler middlewares
+
+```ts
+// single/multiple middlewares
+export const middlewares: Middlewares = {
+  async get(req, res, next) {
+    // intellisense for req, res, and next
+    console.log('get handler was called!');
+    next();
+  },
+  post: [myAuthMiddleware, async (req, res, next) => {
+    // also get intellisense inside middleware arrays
+    console.log('post handler authenticated!')
+    next();
+  }],
+}
