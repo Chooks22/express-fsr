@@ -2,15 +2,9 @@ import { Handler, Router } from 'express';
 import { existsSync, lstatSync, readdirSync } from 'fs';
 import { dirname, join, resolve } from 'path';
 import { parseMiddleware } from './middleware';
+import { Method, RouterOpts } from './types';
 
-export type Method = 'get'|'post'|'put'|'patch'|'delete'|'all';
 const METHODS = Object.freeze<Method>(['get', 'post', 'put', 'patch', 'delete', 'all']);
-
-export interface RouterOpts {
-  baseDir?: string;
-  strictExports?: boolean;
-}
-
 const isDirectory = (path: string) => lstatSync(path).isDirectory();
 
 const createRouteLoader = (basedir: string, router: Router, strict: boolean) => {

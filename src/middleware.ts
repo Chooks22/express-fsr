@@ -1,7 +1,6 @@
 import { Handler } from 'express';
-import { Method } from '.';
+import { Method, Middlewares } from 'types';
 
-export type Middlewares = Handler|Handler[]|Partial<Record<Method, Handler|Handler[]>>;
 type Handlers = [string, Handler|Handler[]][];
 
 const getMiddlewareFromList = (handlers: Handlers): Middlewares => {
