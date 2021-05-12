@@ -4,6 +4,8 @@ import { join, resolve } from 'path';
 import { createRouteLoader } from './route-loader';
 import { RouterOpts } from './types';
 
+export * from './types';
+
 export const createRouter = (config: RouterOpts = {}) => {
   const basedir = resolve(config.baseDir ?? 'routes');
 
