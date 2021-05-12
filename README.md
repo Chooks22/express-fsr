@@ -21,7 +21,7 @@ const routerOpts: RouterOpts = {
   baseDir: join(__dirname, 'routes'), // point to your routes directory
 };
 
-const router = createRouter();
+const router = createRouter(routerOpts);
 app.use('/', router);
 ```
 
@@ -35,13 +35,15 @@ and builds the route based on the file's path and applies the exported verb (`ex
 ```md
 ├── routes/
 │   ├── users/
-│   │   └── :id(\d+)/
+│   │   └── :id/
 │   │       ├── index.ts
 │   │       └── data.ts
 │   └── index.ts
 ```
 
 ### Sample Handlers
+
+**Important**: `delete` method is aliased as `del`, since `delete` is a reserved keyword.
 
 ```ts
 // src/routes/index.ts
@@ -52,29 +54,34 @@ export const get: RequestHandler = (req, res) => {
 ```
 
 ```ts
-// src/routes/users/:id(\d+)/index.ts
+// src/routes/users/:id/index.ts
 interface Params {
   id: string;
 }
 
-// GET /users/:id(\d+)
+// GET /users/:id
 export const get: RequestHandler<Params> = (req, res) => {
   res.json({ userId: req.params.id });
+}
+
+// DELETE /users/:id
+export const del: RequestHandler<Params> = (req, res) => {
+  res.json({ userId: req.params.id, deleted: 1 });
 }
 ```
 
 ```ts
-// src/routes/users/:id(\d+)/data.ts
+// src/routes/users/:id/data.ts
 interface Params {
   id: string;
 }
 
-// GET /users/:id(\d+)/data
+// GET /users/:id/data
 export const get: RequestHandler<Params> = (req, res) => {
   res.json({ userId: req.params.id, name: 'foo' });
 }
 
-// POST /users/:id(\d+)/data
+// POST /users/:id/data
 export const post: RequestHandler<Params> = (req, res) => {
   res.json({ userId: req.params.id, ok: 1 });
 }

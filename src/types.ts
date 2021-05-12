@@ -1,6 +1,6 @@
 import { Handler } from 'express';
 
-export type Method = 'get'|'post'|'put'|'patch'|'delete'|'all';
+export type Method = 'get'|'post'|'put'|'patch'|'del'|'all';
 
 export interface RouterOpts {
   baseDir?: string;
