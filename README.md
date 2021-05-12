@@ -21,7 +21,7 @@ const routerOpts: RouterOpts = {
   baseDir: join(__dirname, 'routes'), // point to your routes directory
 };
 
-const router = createRouter();
+const router = createRouter(routerOpts);
 app.use('/', router);
 ```
 
