@@ -35,7 +35,7 @@ and builds the route based on the file's path and applies the exported verb (`ex
 ```md
 ├── routes/
 │   ├── users/
-│   │   └── :id/
+│   │   └── _id/
 │   │       ├── index.ts
 │   │       └── data.ts
 │   └── index.ts
@@ -54,7 +54,7 @@ export const get: RequestHandler = (req, res) => {
 ```
 
 ```ts
-// src/routes/users/:id/index.ts
+// src/routes/users/_id/index.ts
 interface Params {
   id: string;
 }
@@ -71,7 +71,7 @@ export const del: RequestHandler<Params> = (req, res) => {
 ```
 
 ```ts
-// src/routes/users/:id/data.ts
+// src/routes/users/_id/data.ts
 interface Params {
   id: string;
 }

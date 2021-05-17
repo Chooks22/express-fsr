@@ -1,16 +1,27 @@
 import { Handler, Router } from 'express';
-import { dirname, join } from 'path';
+import { dirname, join, posix, sep, win32 } from 'path';
 import { parseMiddleware } from './middleware';
 import { Method } from './types';
 
 const METHODS = Object.freeze<Method>(['get', 'post', 'put', 'patch', 'del', 'all']);
 
-export const createRouteLoader = (basedir: string, router: Router, strict: boolean) => {
-  return (filename: string, filepath: string) => {
-    const routepath = dirname(filepath.slice(basedir.length)); // trim extra directories from route
-    const routename = filename.startsWith('index') ? '' : filename.replace(/\..*$/, ''); // parse proper filename
+const normalizePath: (path: string) => string = sep === win32.sep
+  ? path => path.replace(/\\/g, posix.sep)
+  : path => path;
 
-    const route = join(routepath, routename);
+const normalizeRoute = (route: string) => route.replace(/_/g, ':');
+
+const parseRoute = (basedir: string, file: string) => {
+  const route = normalizePath(join(basedir, file));
+  return normalizeRoute(route);
+};
+
+export const createRouteLoader = (rootdir: string, router: Router, strict: boolean) => {
+  return (filename: string, filepath: string) => {
+    const basedir = dirname(filepath.slice(rootdir.length)); // remove root directory from file path
+    const file = filename.startsWith('index') ? '' : filename.replace(/\..*$/, '');
+
+    const route = parseRoute(basedir, file);
     const handlers = Object.entries<Handler>(require(filepath));
 
     // find any middlewares first before looping through each handler
