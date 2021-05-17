@@ -9,12 +9,12 @@ const normalizePath: (path: string) => string = sep === win32.sep
   ? path => path.replace(/\\/g, posix.sep)
   : path => path;
 
-export const createRouteLoader = (basedir: string, router: Router, strict: boolean) => {
+export const createRouteLoader = (rootdir: string, router: Router, strict: boolean) => {
   return (filename: string, filepath: string) => {
-    const routepath = dirname(filepath.slice(basedir.length)); // trim extra directories from route
-    const routename = filename.startsWith('index') ? '' : filename.replace(/\..*$/, ''); // parse proper filename
+    const basedir = dirname(filepath.slice(rootdir.length)); // remove root directory from file path
+    const file = filename.startsWith('index') ? '' : filename.replace(/\..*$/, '');
 
-    const route = normalizePath(join(routepath, routename));
+    const route = normalizePath(join(basedir, file));
     const handlers = Object.entries<Handler>(require(filepath));
 
     // find any middlewares first before looping through each handler
