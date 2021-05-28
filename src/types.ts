@@ -7,8 +7,9 @@ export interface RouterOpts {
   strictExports?: boolean;
   router?: RouterOptions;
   middlewares?: Middlewares;
-  dirs?: string[];
-  excludeDirs?: string[];
+  dirs?: (string|RegExp)[];
+  excludeDirs?: (string|RegExp)[];
+  includeRootFiles?: boolean|string[];
 }
 
 export type Middlewares = Handler|Handler[]|Partial<Record<Method, Handler|Handler[]>>;
