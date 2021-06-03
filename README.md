@@ -30,6 +30,18 @@ app.use('/', router);
 `fs-express-router` reads all files inside your `routes` (or wherever you point it to) directory,
 and builds the route based on the file's path and applies the exported verb (`export const get, post, put, // etc...`) as the handlers.
 
+## Router Config
+
+| Field              | Type              | Description                                                  | Default     |
+| ------------------ | ----------------- | ------------------------------------------------------------ | ----------- |
+| `baseDir`          | `string`          | Change the base directory to include. Path must be absolute. | `/routes`   |
+| `strictExports`    | `boolean`         | Throw an error if a file exports an unknown variable.        | `false`     |
+| `router`           | `object`          | Options to pass to Express router.                           | `undefined` |
+| `middlewares`      | `function\|array` | Middlewares to add to all router's routes.                   | `undefined` |
+| `dirs`             | `array`           | A string or regex array to test for allowed directories.     | `undefined` |
+| `excludeDirs`      | `array`           | A string or regex array to test for excluded directories.    | `undefined` |
+| `includeRootFiles` | `boolean`         | Include files inside the root directory.                     | `true`      |
+
 ### Sample Routes
 
 ```md
@@ -94,6 +106,12 @@ export const post: RequestHandler<Params> = (req, res) => {
 ### Usage
 
 ```ts
+// Per-router middleware
+import { createRouter, Middlewares } from 'fs-express-router';
+const middlewares: Middlewares;
+const router = createRouter({ middlewares });
+
+// Per-file middleware
 import { Middlewares } from 'fs-express-router';
 export const middlewares: Middlewares;
 ```
