@@ -2,7 +2,7 @@ import { lstatSync, readdirSync } from 'fs';
 import { basename, join } from 'path';
 import { Loader } from 'route-loader';
 
-export function traverse(this: { load: Loader }, path: string, checkDir = false) {
+export const traverse = function(this: { load: Loader }, path: string, checkDir = false) {
   if (checkDir && !lstatSync(path).isDirectory()) {
     return this.load(basename(path), path);
   }
@@ -16,4 +16,4 @@ export function traverse(this: { load: Loader }, path: string, checkDir = false)
 
     this.load(filename, filepath);
   }
-}
+};
