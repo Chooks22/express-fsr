@@ -1,7 +1,9 @@
 import { Handler, Router } from 'express';
 import { dirname, join, posix, sep, win32 } from 'path';
 import { parseMiddleware } from './middleware';
-import { Method } from './types';
+import { Method, RouterOpts } from './types';
+
+export type Loader = (filename: string, filepath: string) => void;
 
 const METHODS = Object.freeze<Method>(['get', 'post', 'put', 'patch', 'del', 'all']);
 
@@ -16,8 +18,8 @@ const parseRoute = (basedir: string, file: string) => {
   return normalizeRoute(route);
 };
 
-export const createRouteLoader = (rootdir: string, router: Router, strict: boolean) => {
-  return (filename: string, filepath: string) => {
+export const createRouteLoader = (rootdir: string, router: Router, config: RouterOpts): Loader => {
+  return (filename, filepath) => {
     const basedir = dirname(filepath.slice(rootdir.length)); // remove root directory from file path
     const file = filename.startsWith('index') ? '' : filename.replace(/\..*$/, '');
 
@@ -25,10 +27,10 @@ export const createRouteLoader = (rootdir: string, router: Router, strict: boole
     const handlers = Object.entries<Handler>(require(filepath));
 
     // find any middlewares first before looping through each handler
-    const middlewares = parseMiddleware(handlers);
+    const middlewares = parseMiddleware(handlers, config.middlewares);
 
     for (const [method, handler] of handlers) {
-      if (strict && !METHODS.includes(method as Method)) {
+      if (config.strictExports && !METHODS.includes(method as Method)) {
         throw new Error(`Extraneous exports detected at ${filepath}`);
       }
 
