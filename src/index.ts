@@ -1,32 +1,23 @@
 import { Router } from 'express';
-import { existsSync, lstatSync, readdirSync } from 'fs';
-import { join, resolve } from 'path';
+import { resolve } from 'path';
+import { getFiles } from './get-files';
 import { createRouteLoader } from './route-loader';
+import { traverse } from './traverse';
 import { RouterOpts } from './types';
 
 export * from './types';
 
 export const createRouter = (config: RouterOpts = {}) => {
-  const basedir = resolve(config.baseDir ?? 'routes');
-
-  if (!existsSync(basedir)) {
-    throw new Error('Cannot find routes directory!');
-  }
-
-  if (!lstatSync(basedir).isDirectory) {
-    throw new Error('Routes is not a directory!');
-  }
-
   const router = Router();
-  const loadRoute = createRouteLoader(basedir, router, config.strictExports);
 
-  (function traverse(directory: string) {
-    for (const filename of readdirSync(directory)) {
-      const filepath = join(directory, filename);
-      if (lstatSync(filepath).isDirectory()) traverse(filepath);
-      else loadRoute(filename, filepath);
-    }
-  }(basedir));
+  const baseDir = resolve(config.baseDir ?? 'routes');
+  const routeLoader = createRouteLoader(baseDir, router, config);
+
+  const files = getFiles(config, baseDir);
+
+  for (const file of files) {
+    traverse.call({ load: routeLoader }, file, true);
+  }
 
   return router;
 };
