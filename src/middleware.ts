@@ -13,24 +13,30 @@ const getMiddlewareFromList = (handlers: Handlers): Middlewares => {
   }
 };
 
-export const parseMiddleware = (handlers: Handlers) => {
+export const parseMiddleware = (handlers: Handlers, routerMiddlewares: Middlewares) => {
   const middlewares = getMiddlewareFromList(handlers);
 
   // always return an array of handlers for spread syntax.
   // if middleware is an record with http methods:
   // grab the matching method and return as an array
-  const getMiddleware = (method: Method): Handler[] => {
-    if (!middlewares) return [];
+  const normalizeMiddlewares = (middleware: Middlewares, method: Method) => {
+    if (!middleware) return [];
 
-    if (Array.isArray(middlewares)) return middlewares;
-    if (typeof middlewares === 'function') return [middlewares];
+    if (Array.isArray(middleware)) return middleware;
+    if (typeof middleware === 'function') return [middleware];
 
-    const methodMiddleware = middlewares[method];
+    const methodMiddleware = middleware[method];
     if (methodMiddleware) {
       return Array.isArray(methodMiddleware) ? methodMiddleware : [methodMiddleware];
     }
 
     return [];
+  };
+
+  const getMiddleware = (method: Method): Handler[] => {
+    const routerMiddleware = normalizeMiddlewares(routerMiddlewares, method);
+    const fileMiddleware = normalizeMiddlewares(middlewares, method);
+    return [...routerMiddleware, ...fileMiddleware];
   };
 
   return { getMiddleware };
