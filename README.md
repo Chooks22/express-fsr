@@ -152,3 +152,44 @@ const middlewares = {
   }],
 }
 ```
+
+## Advanced Usage
+
+### Router composition
+
+You can include/exclude directories with each router, allowing you to easily compose multiple routes with custom middlewares.
+
+```js
+const { Router } = require('express');
+const { createRouter } = require('fs-express-router');
+
+// Base router where we attach our actual routes
+const baseRouter = Router();
+
+// Router where we add auth middlewares
+const authRouter = createRouter({
+  // Only add routes inside /routes/auth/*
+  includeDirs: ['auth'],
+  // Attach our auth middlewares
+  middlewares: async (req, res, next) => {
+    // do authentication
+    console.log('request authenticated!');
+    next();
+  },
+});
+
+// Router where any requests can go through
+const publicRouter = createRouter({
+  // Exclude our authenticated routes
+  excludeDirs: ['auth'],
+  // Optional: only enable if you have files like /routes/index.js
+  includeRootFiles: true,
+});
+
+// Attach our routers to our base router
+baseRouter.use(authRouter);
+baseRouter.use(publicRouter);
+
+// Use our router
+app.use('/api', baseRouter);
+```
