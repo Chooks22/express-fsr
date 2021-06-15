@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc",
     "clean": "rm -rf dist && npm run build",
-    "prepublish": "npm run build",
+    "prepublish": "npm run clean",
     "publish": "npm publish"
   },
   "repository": {
