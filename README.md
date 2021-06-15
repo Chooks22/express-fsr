@@ -2,9 +2,10 @@
 
 Simple File System Routing for [ExpressJS](http://expressjs.com/), inspired by [NuxtJS](https://nuxtjs.org/docs/2.x/features/file-system-routing/)'s router.
 
-![version](https://img.shields.io/npm/v/fs-express-router)
-![issues](https://img.shields.io/github/issues/Choooks22/fs-express-router)
-![stars](https://img.shields.io/github/stars/Choooks22/fs-express-router?style=social)
+[![version](https://img.shields.io/npm/v/fs-express-router)](https://www.npmjs.com/package/fs-express-router)
+[![npm](https://img.shields.io/npm/dm/fs-express-router)](https://www.npmjs.com/package/fs-express-router)
+[![issues](https://img.shields.io/github/issues/Choooks22/fs-express-router)](https://github.com/Choooks22/fs-express-router/issues)
+[![stars](https://img.shields.io/github/stars/Choooks22/fs-express-router?style=social)](https://github.com/Choooks22/fs-express-router)
 
 ## Getting Started
 
@@ -16,13 +17,14 @@ $ npm i fs-express-router
 
 Add the router to your existing `Express` app:
 
-```ts
-// src/index.ts
-import { createRouter, RouterOpts } from 'fs-express-router';
-import { join } from 'path';
+```js
+// src/index.js
+const { createRouter } = require('fs-express-router');
+const path = require('path');
 
-const routerOpts: RouterOpts = {
-  baseDir: join(__dirname, 'routes'), // point to your routes directory
+const routerOpts = {
+  // point to your routes directory
+  baseDir: path.join(__dirname, 'routes'),
 };
 
 const router = createRouter(routerOpts);
@@ -32,7 +34,7 @@ app.use('/', router);
 ## Directory Structure
 
 `fs-express-router` reads all files inside your `routes` (or wherever you point it to) directory,
-and builds the route based on the file's path and applies the exported verb (`export const get, post, put, // etc...`) as the handlers.
+and builds the route based on the file's path and applies the exported verb (`const get, post, put, // etc...`) as the handlers.
 
 ## Router Config
 
@@ -52,55 +54,53 @@ and builds the route based on the file's path and applies the exported verb (`ex
 ├── routes/
 │   ├── users/
 │   │   └── _id/
-│   │       ├── index.ts
-│   │       └── data.ts
-│   └── index.ts
+│   │       ├── index.js
+│   │       └── data.js
+│   └── index.js
 ```
 
 ### Sample Handlers
 
 **Important**: `delete` method is aliased as `del`, since `delete` is a reserved keyword.
 
-```ts
-// src/routes/index.ts
+```js
+// src/routes/index.js
 // GET /
-export const get: RequestHandler = (req, res) => {
+const get = (req, res) => {
   res.json({ message: 'Hello world!' });
 }
+
+module.exports = { get };
 ```
 
-```ts
-// src/routes/users/_id/index.ts
-interface Params {
-  id: string;
-}
-
+```js
+// src/routes/users/_id/index.js
 // GET /users/:id
-export const get: RequestHandler<Params> = (req, res) => {
+const get = (req, res) => {
   res.json({ userId: req.params.id });
 }
 
 // DELETE /users/:id
-export const del: RequestHandler<Params> = (req, res) => {
+const del = (req, res) => {
   res.json({ userId: req.params.id, deleted: 1 });
 }
+
+module.exports = { get, del };
 ```
 
-```ts
-// src/routes/users/_id/data.ts
-interface Params {
-  id: string;
-}
-
+```js
+// src/routes/users/_id/data.js
 // GET /users/:id/data
-export const get: RequestHandler<Params> = (req, res) => {
+const get = (req, res) => {
   res.json({ userId: req.params.id, name: 'foo' });
 }
 
 // POST /users/:id/data
-export const post: RequestHandler<Params> = (req, res) => {
+const post = (req, res) => {
   res.json({ userId: req.params.id, ok: 1 });
 }
+
+module.exports = { get, post };
 ```
 
 ## Middlewares
@@ -109,28 +109,29 @@ export const post: RequestHandler<Params> = (req, res) => {
 
 ### Usage
 
-```ts
+```js
 // Per-router middleware
-import { createRouter, Middlewares } from 'fs-express-router';
-const middlewares: Middlewares;
+const { createRouter } = require('fs-express-router');
+
+const middlewares;
 const router = createRouter({ middlewares });
 
 // Per-file middleware
-import { Middlewares } from 'fs-express-router';
-export const middlewares: Middlewares;
+const middlewares;
+module.exports = { middlewares };
 ```
 
 ### Per-file middlewares
 
-```ts
+```js
 // single middleware
-export const middlewares: Middlewares = async (req, res, next) => {
+const middlewares = async (req, res, next) => {
   console.log('this route was called!');
   next();
 };
 
 // multiple middlewares
-export const middlewares: Middlewares = [
+const middlewares = [
   myMiddleware1,
   myMiddleware2,
 ];
@@ -138,17 +139,81 @@ export const middlewares: Middlewares = [
 
 ### Per-handler middlewares
 
-```ts
+```js
 // single/multiple middlewares
-export const middlewares: Middlewares = {
+const middlewares = {
   async get(req, res, next) {
-    // intellisense for req, res, and next
     console.log('get handler was called!');
     next();
   },
   post: [myAuthMiddleware, async (req, res, next) => {
-    // also get intellisense inside middleware arrays
     console.log('post handler authenticated!')
     next();
   }],
 }
+```
+
+## Advanced Usage
+
+### Router composition
+
+You can include/exclude directories with each router, allowing you to easily compose multiple routes with custom middlewares.
+
+```js
+const { Router } = require('express');
+const { createRouter } = require('fs-express-router');
+
+// Base router where we attach our actual routes
+const baseRouter = Router();
+
+// Router where we add auth middlewares
+const authRouter = createRouter({
+  // Only add routes inside /routes/auth/*
+  includeDirs: ['auth'],
+  // Attach our auth middlewares
+  middlewares: async (req, res, next) => {
+    // do authentication
+    console.log('request authenticated!');
+    next();
+  },
+});
+
+// Router where any requests can go through
+const publicRouter = createRouter({
+  // Exclude our authenticated routes
+  excludeDirs: ['auth'],
+  // Optional: only enable if you have files like /routes/index.js
+  includeRootFiles: true,
+});
+
+// Attach our routers to our base router
+baseRouter.use(authRouter);
+baseRouter.use(publicRouter);
+
+// Use our router
+app.use('/api', baseRouter);
+```
+
+### Typescript
+
+This package is written using Typescript, so types are supported out of the box!
+
+```ts
+// Interfaces
+import { Middlewares, RouterOpts } from 'fs-express-router';
+
+const middlewares: Middlewares = [];
+const routerOpts: RouterOpts = {};
+
+// Handlers
+import { RequestHandler } from 'express';
+import { Middlewares } from 'fs-express-router';
+
+export const middleware: Middlewares = {
+  async get(req, res, next) {
+  }
+}
+
+export const get: RequestHandler = async (req, res, next) => {
+};
+```
