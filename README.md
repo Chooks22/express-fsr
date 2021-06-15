@@ -2,9 +2,10 @@
 
 Simple File System Routing for [ExpressJS](http://expressjs.com/), inspired by [NuxtJS](https://nuxtjs.org/docs/2.x/features/file-system-routing/)'s router.
 
-![version](https://img.shields.io/npm/v/fs-express-router)
-![issues](https://img.shields.io/github/issues/Choooks22/fs-express-router)
-![stars](https://img.shields.io/github/stars/Choooks22/fs-express-router?style=social)
+[![version](https://img.shields.io/npm/v/fs-express-router)](https://www.npmjs.com/package/fs-express-router)
+[![npm](https://img.shields.io/npm/dm/fs-express-router)](https://www.npmjs.com/package/fs-express-router)
+[![issues](https://img.shields.io/github/issues/Choooks22/fs-express-router)](https://github.com/Choooks22/fs-express-router/issues)
+[![stars](https://img.shields.io/github/stars/Choooks22/fs-express-router?style=social)](https://github.com/Choooks22/fs-express-router)
 
 ## Getting Started
 
