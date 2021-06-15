@@ -193,3 +193,27 @@ baseRouter.use(publicRouter);
 // Use our router
 app.use('/api', baseRouter);
 ```
+
+### Typescript
+
+This package is written using Typescript, so types are supported out of the box!
+
+```ts
+// Interfaces
+import { Middlewares, RouterOpts } from 'fs-express-router';
+
+const middlewares: Middlewares = [];
+const routerOpts: RouterOpts = {};
+
+// Handlers
+import { RequestHandler } from 'express';
+import { Middlewares } from 'fs-express-router';
+
+export const middleware: Middlewares = {
+  async get(req, res, next) {
+  }
+}
+
+export const get: RequestHandler = async (req, res, next) => {
+};
+```
