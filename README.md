@@ -1,25 +1,25 @@
-# fs-express-router
+# express-fsr
 
-Simple File System Routing for [ExpressJS](http://expressjs.com/), inspired by [NuxtJS](https://nuxtjs.org/docs/2.x/features/file-system-routing/)'s router.
+Simple Pluggable File System Routing for [ExpressJS](http://expressjs.com/), inspired by [NuxtJS](https://nuxtjs.org/docs/2.x/features/file-system-routing/)'s router.
 
-[![version](https://img.shields.io/npm/v/fs-express-router)](https://www.npmjs.com/package/fs-express-router)
-[![npm](https://img.shields.io/npm/dm/fs-express-router)](https://www.npmjs.com/package/fs-express-router)
-[![issues](https://img.shields.io/github/issues/Choooks22/fs-express-router)](https://github.com/Choooks22/fs-express-router/issues)
-[![stars](https://img.shields.io/github/stars/Choooks22/fs-express-router?style=social)](https://github.com/Choooks22/fs-express-router)
+[![version](https://img.shields.io/npm/v/express-fsr)](https://www.npmjs.com/package/express-fsr)
+[![npm](https://img.shields.io/npm/dm/express-fsr)](https://www.npmjs.com/package/express-fsr)
+[![issues](https://img.shields.io/github/issues/Choooks22/express-fsr)](https://github.com/Choooks22/express-fsr/issues)
+[![stars](https://img.shields.io/github/stars/Choooks22/express-fsr?style=social)](https://github.com/Choooks22/express-fsr)
 
 ## Getting Started
 
-Install `fs-express-router` as a dependency:
+Install `express-fsr` as a dependency:
 
 ```bash
-$ npm i fs-express-router
+$ yarn add express-fsr
 ```
 
 Add the router to your existing `Express` app:
 
 ```js
 // src/index.js
-const { createRouter } = require('fs-express-router');
+const { createRouter } = require('express-fsr');
 const path = require('path');
 
 const routerOpts = {
@@ -33,7 +33,7 @@ app.use('/', router);
 
 ## Directory Structure
 
-`fs-express-router` reads all files inside your `routes` (or wherever you point it to) directory,
+`express-fsr` reads all files inside your `routes` (or wherever you point it to) directory,
 and builds the route based on the file's path and applies the exported verb (`const get, post, put, // etc...`) as the handlers.
 
 ## Router Config
@@ -105,13 +105,13 @@ module.exports = { get, post };
 
 ## Middlewares
 
-`fs-express-router` grabs middlewares from an exported variable `middlewares`.
+`express-fsr` grabs middlewares from an exported variable `middlewares`.
 
 ### Usage
 
 ```js
 // Per-router middleware
-const { createRouter } = require('fs-express-router');
+const { createRouter } = require('express-fsr');
 
 const middlewares;
 const router = createRouter({ middlewares });
@@ -161,7 +161,7 @@ You can include/exclude directories with each router, allowing you to easily com
 
 ```js
 const { Router } = require('express');
-const { createRouter } = require('fs-express-router');
+const { createRouter } = require('express-fsr');
 
 // Base router where we attach our actual routes
 const baseRouter = Router();
@@ -200,14 +200,13 @@ This package is written using Typescript, so types are supported out of the box!
 
 ```ts
 // Interfaces
-import { Middlewares, RouterOpts } from 'fs-express-router';
+import { Middlewares, RouterOpts } from 'express-fsr';
 
 const middlewares: Middlewares = [];
 const routerOpts: RouterOpts = {};
 
 // Handlers
-import { RequestHandler } from 'express';
-import { Middlewares } from 'fs-express-router';
+import { Middlewares, RequestHandler } from 'express-fsr';
 
 export const middleware: Middlewares = {
   async get(req, res, next) {
