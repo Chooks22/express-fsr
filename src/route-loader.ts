@@ -1,7 +1,7 @@
-import { Handler, Router } from 'express';
+import { Router } from 'express';
 import { dirname, join, posix, sep, win32 } from 'path';
 import { parseMiddleware } from './middleware';
-import { Method, RouterOpts } from './types';
+import { Handler, Method, RouterOpts } from './types';
 
 export type Loader = (filename: string, filepath: string) => void;
 

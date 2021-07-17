@@ -1,5 +1,4 @@
-import { Handler } from 'express';
-import { Method, Middlewares } from 'types';
+import { Handler, Method, Middlewares } from 'types';
 
 type Handlers = [string, Handler|Handler[]][];
 

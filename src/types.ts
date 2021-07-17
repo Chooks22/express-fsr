@@ -1,4 +1,5 @@
 import { Handler, RouterOptions } from 'express';
+export { Handler, RequestHandler } from 'express';
 
 export type Method = 'get'|'post'|'put'|'patch'|'del'|'all';
 
