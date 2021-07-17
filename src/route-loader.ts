@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires, object-curly-newline */
 import { Router } from 'express';
 import { dirname, join, posix, sep, win32 } from 'path';
 import { parseMiddleware } from './middleware';
@@ -5,7 +6,9 @@ import { Handler, Method, RouterOpts } from './types';
 
 export type Loader = (filename: string, filepath: string) => void;
 
-const METHODS = Object.freeze<Method>(['get', 'post', 'put', 'patch', 'del', 'all']);
+const METHODS = Object.freeze<Method>([
+  'get', 'post', 'put', 'patch', 'del', 'all',
+]);
 
 const normalizePath: (path: string) => string = sep === win32.sep
   ? path => path.replace(/\\/g, posix.sep)
@@ -24,7 +27,7 @@ export const createRouteLoader = (rootdir: string, router: Router, config: Route
     const file = filename.startsWith('index') ? '' : filename.replace(/\..*$/, '');
 
     const route = parseRoute(basedir, file);
-    const handlers = Object.entries<Handler>(require(filepath));
+    const handlers = Object.entries(require(filepath) as Record<string, Handler>);
 
     // find any middlewares first before looping through each handler
     const middlewares = parseMiddleware(handlers, config.middlewares);

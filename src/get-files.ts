@@ -3,7 +3,7 @@ import { join } from 'path';
 import { createFilter } from './filter';
 import { RouterOpts } from './types';
 
-export const getFiles = (config: RouterOpts, baseDir: string) => {
+export const getFiles = (config: RouterOpts, baseDir: string): string[] => {
   if (!existsSync(baseDir)) {
     throw new Error('Cannot find routes directory!');
   }

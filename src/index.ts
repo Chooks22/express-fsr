@@ -7,7 +7,7 @@ import { RouterOpts } from './types';
 
 export * from './types';
 
-export const createRouter = (config: RouterOpts = {}) => {
+export const createRouter = (config: RouterOpts = {}): Router => {
   const router = Router(config.router);
 
   const baseDir = resolve(config.baseDir ?? 'routes');

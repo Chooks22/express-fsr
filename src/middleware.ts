@@ -1,6 +1,7 @@
 import { Handler, Method, Middlewares } from 'types';
 
 type Handlers = [string, Handler|Handler[]][];
+type MiddlewareParser = (method: Method) => Handler[];
 
 const getMiddlewareFromList = (handlers: Handlers): Middlewares => {
   for (let i = 0, n = handlers.length; i < n; i++) {
@@ -10,9 +11,14 @@ const getMiddlewareFromList = (handlers: Handlers): Middlewares => {
     handlers.splice(i, 1); // pop middleware off from entries
     return middleware;
   }
+
+  return [];
 };
 
-export const parseMiddleware = (handlers: Handlers, routerMiddlewares: Middlewares) => {
+export const parseMiddleware = (
+  handlers: Handlers,
+  routerMiddlewares: Middlewares,
+): { getMiddleware: MiddlewareParser } => {
   const middlewares = getMiddlewareFromList(handlers);
 
   // always return an array of handlers for spread syntax.
@@ -32,7 +38,7 @@ export const parseMiddleware = (handlers: Handlers, routerMiddlewares: Middlewar
     return [];
   };
 
-  const getMiddleware = (method: Method): Handler[] => {
+  const getMiddleware: MiddlewareParser = method => {
     const routerMiddleware = normalizeMiddlewares(routerMiddlewares, method);
     const fileMiddleware = normalizeMiddlewares(middlewares, method);
     return [...routerMiddleware, ...fileMiddleware];
