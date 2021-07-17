@@ -1,6 +1,6 @@
 import { lstatSync, readdirSync } from 'fs';
 import { basename, join } from 'path';
-import { Loader } from 'route-loader';
+import { Loader } from './route-loader';
 
 export const traverse = function(this: { load: Loader }, path: string, checkDir = false) {
   if (checkDir && !lstatSync(path).isDirectory()) {

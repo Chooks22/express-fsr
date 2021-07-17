@@ -1,6 +1,6 @@
 import { lstatSync } from 'fs';
 import { join } from 'path';
-import { RouterOpts } from 'types';
+import { RouterOpts } from './types';
 
 type Filter = (filename: string) => boolean;
 
