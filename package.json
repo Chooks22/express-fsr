@@ -6,9 +6,9 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "clean": "rm -rf dist && npm run build",
-    "prepublish": "npm run clean",
-    "publish": "npm publish"
+    "clean": "rm -rf dist && yarn build",
+    "prepublish": "yarn clean",
+    "publish": "yarm publish"
   },
   "repository": {
     "type": "git",
