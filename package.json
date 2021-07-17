@@ -1,6 +1,6 @@
 {
   "name": "express-fsr",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Simple Pluggable File System Routing inspired by NuxtJS",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
