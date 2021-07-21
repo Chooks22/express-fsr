@@ -25,6 +25,8 @@ export const parseMiddleware = (
   // if middleware is an record with http methods:
   // grab the matching method and return as an array
   const normalizeMiddlewares = (middleware: Middlewares, method: Method) => {
+    if (!middleware) return [];
+
     if (Array.isArray(middleware)) return middleware;
     if (typeof middleware === 'function') return [middleware];
 
