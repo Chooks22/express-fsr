@@ -1,6 +1,6 @@
 import { Handler, Method, Middlewares } from 'types';
 
-type Handlers = [string, Handler|Handler[]][];
+type Handlers = [string, Handler | Handler[]][];
 type MiddlewareParser = (method: Method) => Handler[];
 
 const getMiddlewareFromList = (handlers: Handlers): Middlewares => {

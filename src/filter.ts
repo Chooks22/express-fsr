@@ -17,7 +17,7 @@ const filterRootFiles = (filter: Filter, validFilenames?: string[]) => {
   };
 };
 
-const filter = (filename: string) => (check: string|RegExp) => typeof check === 'string'
+const filter = (filename: string) => (check: string | RegExp) => typeof check === 'string'
   ? check.includes(filename)
   : check.test(filename);
 
